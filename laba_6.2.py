@@ -14,7 +14,7 @@ def select_commands(prof_count, jun_count):
 
     return selected_commands
 
-# Функция подбора лучшей команды, учитывая ограничения:
+# Функция подбора лучшей команды, учитывая ограничения (целевая функция):
 def select_best_commands(command_list):
     max_score = 0
     best_commands = []
