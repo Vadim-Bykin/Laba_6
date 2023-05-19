@@ -1,17 +1,44 @@
 from itertools import combinations
 from random import randint
 
+# Функция подбора команд в соответствии с ограничениямми:
+def select_commands(prof_count, jun_count):
+    selected_commands = []
+    for prof in combinations(profs, prof_count):
+        for jun in combinations(juns, jun_count):
+            cur_command = prof + jun
+            cur_score = 0
+            for item in cur_command:
+                cur_score += int(item['score'])
+            selected_commands.append([cur_command, cur_score, prof_count, jun_count])
+
+    return selected_commands
+
+# Функция подбора лучшей команды, учитывая ограничения:
+def select_best_commands(command_list):
+    max_score = 0
+    best_commands = []
+    for cur_command in command_list:
+        if cur_command[1] > max_score:
+            max_score = cur_command[1]
+
+    for cur_command in command_list:
+        if cur_command[1] == max_score:
+            best_commands.append(cur_command)
+
+    return best_commands
+
 COUNT = 4  # Количество игроков в команде
 
 JUN_MIN_SCORE = 0
-JUN_MAX_SCORE = 500
+JUN_MAX_SCORE = 1000
 
-PROF_MIN_SCORE = 2200
+PROF_MIN_SCORE = 2400
 PROF_MAX_SCORE = 2900
 
 # Для наглядности - имена профессионалов начинаются на П
 # Имена любителей - начинаются на Л
-# score - рейтинг игрока
+# score - рейтинг
 profs = [{'name': 'Пётр', 'score': randint(PROF_MIN_SCORE, PROF_MAX_SCORE)},
          {'name': 'Павел', 'score': randint(PROF_MIN_SCORE, PROF_MAX_SCORE)},
          {'name': 'Платон', 'score': randint(PROF_MIN_SCORE, PROF_MAX_SCORE)},
@@ -22,6 +49,7 @@ juns = [{'name': 'Леонид', 'score': randint(JUN_MIN_SCORE, JUN_MAX_SCORE)}
         {'name': 'Лазарь', 'score': randint(JUN_MIN_SCORE, JUN_MAX_SCORE)},
         {'name': 'Лев', 'score': randint(JUN_MIN_SCORE, JUN_MAX_SCORE)},
         {'name': 'Лаврентий', 'score': randint(JUN_MIN_SCORE, JUN_MAX_SCORE)}]  # группа любителей
+
 
 # Формируем список из всех возможных комбнаций и считаем одновременно рейтинг команды и количество профессионалов и любителей в команде
 # Список игроков, рейтинг команды, кол-во профессионалов, кол-во любителей
@@ -36,51 +64,24 @@ for i in range(COUNT + 1):
             commands.append([cur_command, cur_score, i, COUNT - i])
 
 k = 0
-print('-' * 75)
+print('-' * 60)
 print("Все возможные наборы команд: \n")
 for command in commands:
     k += 1
     print(k, '|',
         f"{command[0][0]['name']} ({command[0][0]['score']}) {command[0][1]['name']} ({command[0][1]['score']}) "
-        f"{command[0][2]['name']} ({command[0][2]['score']}) {command[0][3]['name']} ({command[0][3]['score']}) - {command[1]}")
+        f"{command[0][2]['name']} ({command[0][2]['score']}) {command[0][3]['name']} {command[0][3]['score']}) - {command[1]}")
     print(f"Количество профессионалов - {command[2]}, количество любителей - {command[3]}\n")
 
 
-# Функция подбора команды в соответствии с ограничениями
-def select_commands(command_list, prof_count, jun_count):
-    selected_commands = []
-    for command in command_list:
-        if command[2] < prof_count:
-            continue
-        elif command[3] < jun_count:
-            continue
-
-        selected_commands.append(command)
-
-    return selected_commands
-
-# Функция подбора лучшей команды, учитывая ограничения
-def select_best_commands(command_list):
-    max_score = 0
-    best_commands = []
-    for cur_command in command_list:
-        if cur_command[1] > max_score:
-            max_score = cur_command[1]
-
-    for cur_command in command_list:
-        if cur_command[1] == max_score:
-            best_commands.append(cur_command)
-
-    return best_commands
-
 c = 0
-prof_count = 2  # количество профессионалов в команде
-jun_count = 2  # количество любителей в команде
-selected_commands = select_commands(commands, prof_count, jun_count)
-print('-' * 90)
-print(f'Все команды, удовлетворяющие ограничениям (не менее {prof_count} профессионала(ов) и не менее {jun_count} любителя(ей)):')
+prof_count = 1  # количество профессионалов в команде
+jun_count = 3  # количество любителей в команде
+selected_commands = select_commands(prof_count, jun_count)
+print('-' * 80)
+print(f'Все команды, удовлетворяющие условиям ({prof_count} профессионал(-а/-ов) и {jun_count} любитель(-я)):')
 if len(selected_commands) != 0:
-    print('Порядковый номер команды, состав игроков, общий рейтинг команды \n')
+    print('Порядковый номер команды, cостав игроков, общий рейтинг команды \n')
     for command in selected_commands:
         c += 1
         print(c, '|', command[0][0]['name'], command[0][1]['name'], command[0][2]['name'], command[0][3]['name'], '-', command[1])
@@ -90,7 +91,7 @@ else:
 best_commands = select_best_commands(selected_commands)
 print('-' * 50)
 if len(best_commands) != 0:
-    print('\nСамая(ые) лучшая(ые) команда(ы):')
+    print('Самые лучшие команды:')
     print('Состав игроков, общий рейтинг команды \n')
     for command in best_commands:
         print(command[0][0]['name'], command[0][1]['name'], command[0][2]['name'], command[0][3]['name'], '-', command[1])
