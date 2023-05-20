@@ -63,6 +63,7 @@ for i in range(COUNT + 1):
                 cur_score += int(item['score'])
             commands.append([cur_command, cur_score, i, COUNT - i])
 
+# Первая часть вывода - вывод всех возможных вариантов команд
 k = 0
 print('-' * 60)
 print("Все возможные наборы команд: \n")
@@ -74,6 +75,7 @@ for command in commands:
     print(f"Количество профессионалов - {command[2]}, количество любителей - {command[3]}\n")
 
 
+# Вторая часть вывода - вывод команд учитывая ограничения
 c = 0
 prof_count = 1  # количество профессионалов в команде
 jun_count = 3  # количество любителей в команде
@@ -88,6 +90,7 @@ if len(selected_commands) != 0:
 else:
     print("Команд, удовлетворяющих условиям не найдено")
 
+# Третья часть вывода - вывод наилучшей команды (наибольшее количество очков)
 best_commands = select_best_commands(selected_commands)
 print('-' * 50)
 if len(best_commands) != 0:
